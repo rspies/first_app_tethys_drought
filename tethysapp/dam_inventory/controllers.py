@@ -185,7 +185,7 @@ def home(request):
         options={'url': 'https://services.nationalmap.gov/arcgis/rest/services/wbd/MapServer'},
         legend_title='HUC Watersheds',
         layer_options={'visible':True,'opacity':0.4},
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
     
 #    # SWSI Rest server        
 #    swsi = MVLayer(
@@ -194,7 +194,7 @@ def home(request):
 #                 'params': {'FORMAT': 'png8'}},
 #        legend_title='SWSI',
 #        layer_options={'visible':True,'opacity':0.4},
-#        legend_extent=[-173, 17, -65, 72])
+#        legend_extent=[-112, 36.3, -98.5, 41.66])
         
     # Define map view options
     map_view_options = MapView(
@@ -239,7 +239,7 @@ def drought_map(request):
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
         legend_title='State Boundaries',
         layer_options={'visible':True,'opacity':0.8},
-        legend_extent=[-173, 17, -65, 72])    
+        legend_extent=[-112, 36.3, -98.5, 41.66])    
     
     ##### WMS Layers - Ryan
     usdm_legend = MVLegendImageClass(value='Drought Category',
@@ -318,7 +318,7 @@ def drought_map(request):
         options={'url': 'https://services.nationalmap.gov/arcgis/rest/services/wbd/MapServer'},
         legend_title='HUC Watersheds',
         layer_options={'visible':False,'opacity':0.4},
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
 
     # Define SWSI KML Layer
     SWSI_kml = MVLayer(
@@ -336,23 +336,23 @@ def drought_map(request):
                 'params': {'LAYERS': 'show:1,2,3,4,5,12'}},
         legend_title='NWM Streamflow',
         layer_options={'visible':False,'opacity':1.0},
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
     nwm_stream_anom = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer',
                 'params': {'LAYERS': 'show:7,8,9,10,11,12'}},
         legend_title='NWM Flow Anomoly',
         layer_options={'visible':True,'opacity':1.0},
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
         
     # NOAA NOHRSC snow products
     snodas_swe = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/NOHRSC_Snow_Analysis/MapServer',
                 'params': {'LAYERS': 'show:7'}},
-        legend_title='SNODAS Model SWE',
+        legend_title='SNODAS Model SWE (in)',
         layer_options={'visible':True,'opacity':0.7},
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
 
     # NOAA Rest server for NWM soil moisture
     nwm_soil_legend = MVLegendGeoServerImageClass(value='test', style='green', layer='rivers',
@@ -363,7 +363,7 @@ def drought_map(request):
         legend_title='NWM Soil Moisture',
         layer_options={'visible':False,'opacity':0.5},
         legend_classes=[nwm_soil_legend],
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
         
 #    SWSI_json = MVLayer(
 #        source='GeoJSON',
@@ -414,7 +414,7 @@ def drought_map_forecast(request):
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
         legend_title='State Boundaries',
         layer_options={'visible':True,'opacity':0.8},
-        legend_extent=[-173, 17, -65, 72])    
+        legend_extent=[-112, 36.3, -98.5, 41.66])    
     
     # USGS Rest server for HUC watersheds        
     watersheds = MVLayer(
@@ -422,7 +422,7 @@ def drought_map_forecast(request):
         options={'url': 'https://services.nationalmap.gov/arcgis/rest/services/wbd/MapServer'},
         legend_title='HUC Watersheds',
         layer_options={'visible':False,'opacity':0.4},
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
 
     # NOAA Rest server for NWM streamflow      
     nwm_stream = MVLayer(
@@ -431,25 +431,84 @@ def drought_map_forecast(request):
                 'params': {'LAYERS': 'show:1,2,3,4,5,12'}},
         legend_title='NWM Streamflow',
         layer_options={'visible':False,'opacity':1.0},
-        legend_extent=[-173, 17, -65, 72])
+        legend_classes=[
+            MVLegendClass('line', '> 1.25M', stroke='rgba(75,0,115,0.9)'),
+            MVLegendClass('line', '500K - 1.25M', stroke='rgba(176,28,232,0.9)'),
+            MVLegendClass('line', '100K - 500K', stroke='rgba(246,82,213,0.9)'),
+            MVLegendClass('line', '50K - 100K', stroke='rgba(254,7,7,0.9)'),
+            MVLegendClass('line', '25K - 50K', stroke='rgba(252,138,23,0.9)'),
+            MVLegendClass('line', '10K - 25K', stroke='rgba(45,108,183,0.9)'),
+            MVLegendClass('line', '5K - 10K', stroke='rgba(27,127,254,0.9)'),
+            MVLegendClass('line', '2.5K - 5K', stroke='rgba(79,169,195,0.9)'),
+            MVLegendClass('line', '250 - 2.5K', stroke='rgba(122,219,250,0.9)'),
+            MVLegendClass('line', '0 - 250', stroke='rgba(206,222,251,0.9)'),
+            MVLegendClass('line', 'No Data', stroke='rgba(195,199,201,0.9)')],
+        legend_extent=[-112, 36.3, -98.5, 41.66])
     nwm_stream_anom = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Stream_Analysis/MapServer',
                 'params': {'LAYERS': 'show:7,8,9,10,11,12'}},
         legend_title='NWM Flow Anomoly',
         layer_options={'visible':True,'opacity':1.0},
-        legend_extent=[-173, 17, -65, 72])
+        legend_classes=[
+            MVLegendClass('line', 'High', stroke='rgba(176,28,232,0.9)'),
+            MVLegendClass('line', '', stroke='rgba(61,46,231,0.9)'),
+            MVLegendClass('line', '', stroke='rgba(52,231,181,0.9)'),
+            MVLegendClass('line', 'Moderate', stroke='rgba(102,218,148,0.9)'),
+            MVLegendClass('line', '', stroke='rgba(241,156,77,0.9)'),
+            MVLegendClass('line', '', stroke='rgba(175,62,44,0.9)'),
+            MVLegendClass('line', 'Low', stroke='rgba(241,42,90,0.9)'),
+            MVLegendClass('line', 'No Data', stroke='rgba(195,199,201,0.9)')],
+        legend_extent=[-112, 36.3, -98.5, 41.66])
 
     # NOAA Rest server for NWM soil moisture
-    nwm_soil_legend = MVLegendGeoServerImageClass(value='test', style='green', layer='rivers',
+    nwm_soil_legend = MVLegendGeoServerImageClass(value='test', style='green', layer='NWM_Land_Analysis',
                          geoserver_url='https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Land_Analysis/MapServer/legend?f=pjson')   
     nwm_soil = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://mapservice.nohrsc.noaa.gov/arcgis/rest/services/national_water_model/NWM_Land_Analysis/MapServer'},
-        legend_title='NWM Soil Moisture',
+        legend_title='NWM Soil Moisture (%)',
         layer_options={'visible':True,'opacity':0.5},
-        legend_classes=[nwm_soil_legend],
-        legend_extent=[-173, 17, -65, 72])
+        legend_classes=[
+            MVLegendClass('polygon', '0.95 - 1.0', fill='rgba(49,56,148,0.5)'),
+            MVLegendClass('polygon', '0.85 - 0.95', fill='rgba(97,108,181,0.5)'),
+            MVLegendClass('polygon', '0.75 - 0.85', fill='rgba(145,180,216,0.5)'),
+            MVLegendClass('polygon', '0.65 - 0.75', fill='rgba(189,225,225,0.5)'),
+            MVLegendClass('polygon', '0.55 - 0.65', fill='rgba(223,240,209,0.5)'),
+            MVLegendClass('polygon', '0.45 - 0.55', fill='rgba(225,255,191,0.5)'),
+            MVLegendClass('polygon', '0.35 - 0.45', fill='rgba(255,222,150,0.5)'),
+            MVLegendClass('polygon', '0.25 - 0.35', fill='rgba(255,188,112,0.5)'),
+            MVLegendClass('polygon', '0.15 - 0.25', fill='rgba(235,141,81,0.5)'),
+            MVLegendClass('polygon', '0.05 - 0.15', fill='rgba(201,77,58,0.5)'),
+            MVLegendClass('polygon', '0 - 0.05', fill='rgba(166,0,38,0.5)')],
+        legend_extent=[-112, 36.3, -98.5, 41.66])
+        
+    # NCEP Climate Outlook MapServer
+    ncep_month_outlook = MVLayer(
+        source='TileArcGISRest',
+        options={'url': 'https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Climate_Outlooks/cpc_drought_outlk/MapServer',
+                'params': {'LAYERS': 'show:0'}},
+        legend_title='NCEP Monthly Drought Outlook',
+        layer_options={'visible':False,'opacity':0.7},
+        legend_classes=[
+            MVLegendClass('polygon', 'Persistence', fill='rgba(155,113,73,0.7)'),
+            MVLegendClass('polygon', 'Improvement', fill='rgba(226,213,192,0.7)'),
+            MVLegendClass('polygon', 'Removal', fill='rgba(178,173,105,0.7)'),
+            MVLegendClass('polygon', 'Development', fill='rgba(255,222,100,0.7)')],
+        legend_extent=[-112, 36.3, -98.5, 41.66])
+    ncep_seas_outlook = MVLayer(
+        source='TileArcGISRest',
+        options={'url': 'https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Climate_Outlooks/cpc_drought_outlk/MapServer',
+                'params': {'LAYERS': 'show:1'}},
+        legend_title='NCEP Seasonal Drought Outlook',
+        layer_options={'visible':False,'opacity':0.7},
+        legend_classes=[
+            MVLegendClass('polygon', 'Persistence', fill='rgba(155,113,73,0.7)'),
+            MVLegendClass('polygon', 'Improvement', fill='rgba(226,213,192,0.7)'),
+            MVLegendClass('polygon', 'Removal', fill='rgba(178,173,105,0.7)'),
+            MVLegendClass('polygon', 'Development', fill='rgba(255,222,100,0.7)')],
+        legend_extent=[-112, 36.3, -98.5, 41.66])
+
 
     # Define map view options
     drought_fx_map_view_options = MapView(
@@ -457,8 +516,8 @@ def drought_map_forecast(request):
             width='100%',
             controls=['ZoomSlider', 'Rotate', 'FullScreen',
                       {'MousePosition': {'projection': 'EPSG:4326'}},
-                      {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-130, 22, -65, 54]}}],
-            layers=[tiger_boundaries,nwm_stream,nwm_stream_anom,nwm_soil,watersheds],
+                      {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-112, 36.3, -98.5, 41.66]}}],
+            layers=[tiger_boundaries,nwm_stream_anom,nwm_stream,nwm_soil,ncep_month_outlook,ncep_seas_outlook,watersheds],
             view=view_options,
             basemap='OpenStreetMap',
             legend=True
@@ -492,7 +551,7 @@ def drought_index_map(request):
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
         legend_title='State Boundaries',
         layer_options={'visible':True,'opacity':0.8},
-        legend_extent=[-173, 17, -65, 72]) 
+        legend_extent=[-112, 36.3, -98.5, 41.66]) 
         
     # USGS Rest server for HUC watersheds        
     watersheds = MVLayer(
@@ -500,7 +559,7 @@ def drought_index_map(request):
         options={'url': 'https://services.nationalmap.gov/arcgis/rest/services/wbd/MapServer'},
         legend_title='HUC Watersheds',
         layer_options={'visible':False,'opacity':0.4},
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
     
     ##### WMS Layers - Ryan
     usdm_legend = MVLegendImageClass(value='Drought Category',
@@ -600,7 +659,7 @@ def drought_prec_map(request):
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
         legend_title='State Boundaries',
         layer_options={'visible':True,'opacity':0.8},
-        legend_extent=[-173, 17, -65, 72])    
+        legend_extent=[-112, 36.3, -98.5, 41.66])    
         
     # USGS Rest server for HUC watersheds        
     watersheds = MVLayer(
@@ -608,7 +667,7 @@ def drought_prec_map(request):
         options={'url': 'https://services.nationalmap.gov/arcgis/rest/services/wbd/MapServer'},
         legend_title='HUC Watersheds',
         layer_options={'visible':False,'opacity':0.4},
-        legend_extent=[-173, 17, -65, 72])
+        legend_extent=[-112, 36.3, -98.5, 41.66])
     
     ww_legend = MVLegendImageClass(value='Current Streamflow',
                              image_url='https://edcintl.cr.usgs.gov/geoserver/qdriwaterwatchshapefile/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=water_watch_today')   
@@ -641,13 +700,26 @@ def drought_prec_map(request):
                 'params': {'LAYERS': 'show:7'}},
         legend_title='SNODAS Model SWE',
         layer_options={'visible':True,'opacity':0.7},
-        legend_extent=[-173, 17, -65, 72])
+        legend_classes=[
+            MVLegendClass('polygon', '0.04', fill='rgba(144,175,180,0.7)'),
+            MVLegendClass('polygon', '0.20', fill='rgba(128,165,192,0.7)'),
+            MVLegendClass('polygon', '0.39', fill='rgba(95,126,181,0.7)'),
+            MVLegendClass('polygon', '0.78', fill='rgba(69,73,171,0.7)'),
+            MVLegendClass('polygon', '2.00', fill='rgba(71,46,167,0.7)'),
+            MVLegendClass('polygon', '3.90', fill='rgba(79,20,144,0.7)'),
+            MVLegendClass('polygon', '5.90', fill='rgba(135,33,164,0.7)'),
+            MVLegendClass('polygon', '9.80', fill='rgba(155,53,148,0.7)'),
+            MVLegendClass('polygon', '20', fill='rgba(189,88,154,0.7)'),
+            MVLegendClass('polygon', '30', fill='rgba(189,115,144,0.7)'),
+            MVLegendClass('polygon', '39', fill='rgba(195,142,150,0.7)'),
+            MVLegendClass('polygon', '79', fill='rgba(179,158,153,0.7)')],
+        legend_extent=[-112, 36.3, -98.5, 41.66])
         
     # Define map view options
     drought_prec_map_view_options = MapView(
             height='630px',
             width='100%',
-            controls=['ZoomSlider', 'Rotate', 'FullScreen',
+            controls=['ZoomSlider', 'Rotate', 'FullScreen', 'ScaleLine', 'WMSLegend',
                       {'MousePosition': {'projection': 'EPSG:4326'}},
                       {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-130, 22, -65, 54]}}],
             layers=[tiger_boundaries,water_watch,snodas_swe,precip7day,watersheds],
@@ -662,6 +734,10 @@ def drought_prec_map(request):
 
     return render(request, 'dam_inventory/drought_prec.html', context)
 ##################### End Drought Precip Map #############################################
+#########################################################################################
+@login_required()
+def drought_4pane(request):
+    return render(request, 'dam_inventory/drought_4pane.html')
 #########################################################################################
 @login_required()
 def add_dam(request):

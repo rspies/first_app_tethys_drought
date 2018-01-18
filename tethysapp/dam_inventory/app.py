@@ -7,7 +7,7 @@ class DamInventory(TethysAppBase):
     Tethys app class for Dam Inventory.
     """
 
-    name = 'Ryan Drought Test'
+    name = 'Colorado Drought Monitoring Tool - Beta'
     index = 'dam_inventory:home'
     icon = 'dam_inventory/images/drought_logo.png'
     package = 'dam_inventory'
@@ -49,7 +49,12 @@ class DamInventory(TethysAppBase):
                 name='drought_prec',
                 url='dam-inventory/drought_prec',
                 controller='dam_inventory.controllers.drought_prec_map'
-            ),   
+            ),
+            UrlMap(
+                name='drought_4pane',
+                url='dam-inventory/drought_4pane',
+                controller='dam_inventory.controllers.drought_4pane'
+            ),
             UrlMap(
                 name='add_dam',
                 url='dam-inventory/dams/add',
