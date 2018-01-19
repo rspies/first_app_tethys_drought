@@ -377,7 +377,7 @@ def drought_map(request):
     drought_map_view_options = MapView(
             height='630px',
             width='100%',
-            controls=['ZoomSlider', 'Rotate', 'FullScreen',
+            controls=['ZoomSlider', 'Rotate', 'ScaleLine', 'FullScreen',
                       {'MousePosition': {'projection': 'EPSG:4326'}},
                       {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-130, 22, -65, 54]}}],
             layers=[tiger_boundaries,nwm_stream,nwm_stream_anom,nwm_soil,snodas_swe,water_watch,SWSI_kml,usdm_kml,precip7day,vegdri,quickdri,watersheds],
@@ -392,9 +392,9 @@ def drought_map(request):
 
     return render(request, 'dam_inventory/drought.html', context)
 ##################### End Drought Main Map #############################################
-##################### Start Drought Map - Forecast #############################################
+##################### Start Drought Map - NWM Forecast #############################################
 @login_required()
-def drought_map_forecast(request):
+def drought_map_nwmforecast(request):
     """
     Controller for the app drought map page.
     """
@@ -483,13 +483,65 @@ def drought_map_forecast(request):
             MVLegendClass('polygon', '0 - 0.05', fill='rgba(166,0,38,0.5)')],
         legend_extent=[-112, 36.3, -98.5, 41.66])
         
+
+    # Define map view options
+    drought_nwmfx_map_view_options = MapView(
+            height='630px',
+            width='100%',
+            controls=['ZoomSlider', 'Rotate', 'ScaleLine', 'FullScreen',
+                      {'MousePosition': {'projection': 'EPSG:4326'}},
+                      {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-112, 36.3, -98.5, 41.66]}}],
+            layers=[tiger_boundaries,nwm_stream_anom,nwm_stream,nwm_soil,watersheds],
+            view=view_options,
+            basemap='OpenStreetMap',
+            legend=True
+        )
+
+    context = {
+        'drought_nwmfx_map_view_options':drought_nwmfx_map_view_options,
+    }
+
+    return render(request, 'dam_inventory/drought_nwmfx.html', context)
+########################### End drought_nwmfx map #######################################
+######################### Start Drought Map - Outlook ######################################
+@login_required()
+def drought_map_outlook(request):
+    """
+    Controller for the app drought map page.
+    """
+           
+    view_center = [-105.6, 39.0]
+    view_options = MVView(
+        projection='EPSG:4326',
+        center=view_center,
+        zoom=7.0,
+        maxZoom=12,
+        minZoom=5
+    )
+
+    # TIGER state/county mapserver
+    tiger_boundaries = MVLayer(
+        source='TileArcGISRest',
+        options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
+        legend_title='State Boundaries',
+        layer_options={'visible':True,'opacity':0.8},
+        legend_extent=[-112, 36.3, -98.5, 41.66])    
+    
+    # USGS Rest server for HUC watersheds        
+    watersheds = MVLayer(
+        source='TileArcGISRest',
+        options={'url': 'https://services.nationalmap.gov/arcgis/rest/services/wbd/MapServer'},
+        legend_title='HUC Watersheds',
+        layer_options={'visible':False,'opacity':0.4},
+        legend_extent=[-112, 36.3, -98.5, 41.66])
+        
     # NCEP Climate Outlook MapServer
     ncep_month_outlook = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Climate_Outlooks/cpc_drought_outlk/MapServer',
                 'params': {'LAYERS': 'show:0'}},
         legend_title='NCEP Monthly Drought Outlook',
-        layer_options={'visible':False,'opacity':0.7},
+        layer_options={'visible':True,'opacity':0.7},
         legend_classes=[
             MVLegendClass('polygon', 'Persistence', fill='rgba(155,113,73,0.7)'),
             MVLegendClass('polygon', 'Improvement', fill='rgba(226,213,192,0.7)'),
@@ -508,28 +560,40 @@ def drought_map_forecast(request):
             MVLegendClass('polygon', 'Removal', fill='rgba(178,173,105,0.7)'),
             MVLegendClass('polygon', 'Development', fill='rgba(255,222,100,0.7)')],
         legend_extent=[-112, 36.3, -98.5, 41.66])
+        
+    # CPC Wildfire/Drought forecast
+    cpc_37_outlook = MVLayer(
+        source='TileArcGISRest',
+        options={'url': 'https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Climate_Outlooks/cpc_weather_hazards/MapServer',
+                'params': {'LAYERS': 'show:7'}},
+        legend_title='CPC 3-7 Day WildFire/Drought',
+        layer_options={'visible':True,'opacity':0.7},
+        legend_classes=[
+            MVLegendClass('polygon', 'Wildfire Risk', fill='rgba(130,130,130,0.7)'),
+            MVLegendClass('polygon', 'Severe Drought', fill='rgba(207,181,151,0.7)')],
+        legend_extent=[-112, 36.3, -98.5, 41.66])
 
 
     # Define map view options
-    drought_fx_map_view_options = MapView(
+    drought_outlook_map_view_options = MapView(
             height='630px',
             width='100%',
-            controls=['ZoomSlider', 'Rotate', 'FullScreen',
+            controls=['ZoomSlider', 'Rotate', 'ScaleLine', 'FullScreen',
                       {'MousePosition': {'projection': 'EPSG:4326'}},
                       {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-112, 36.3, -98.5, 41.66]}}],
-            layers=[tiger_boundaries,nwm_stream_anom,nwm_stream,nwm_soil,ncep_month_outlook,ncep_seas_outlook,watersheds],
+            layers=[tiger_boundaries,ncep_month_outlook,ncep_seas_outlook,cpc_37_outlook,watersheds],
             view=view_options,
             basemap='OpenStreetMap',
             legend=True
         )
 
     context = {
-        'drought_fx_map_view_options':drought_fx_map_view_options,
+        'drought_outlook_map_view_options':drought_outlook_map_view_options,
     }
 
-    return render(request, 'dam_inventory/drought_fx.html', context)
-########################### End drought_fx map #######################################
-########################## Start drought_index amp#########################################
+    return render(request, 'dam_inventory/drought_outlook.html', context)
+########################### End drought_outlook map #######################################
+########################## Start drought_index Map#########################################
 @login_required()
 def drought_index_map(request):
     """
@@ -622,7 +686,7 @@ def drought_index_map(request):
     drought_index_map_view_options = MapView(
             height='630px',
             width='100%',
-            controls=['ZoomSlider', 'Rotate', 'FullScreen',
+            controls=['ZoomSlider', 'Rotate', 'ScaleLine', 'FullScreen',
                       {'MousePosition': {'projection': 'EPSG:4326'}},
                       {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-130, 22, -65, 54]}}],
             layers=[tiger_boundaries,SWSI_kml,usdm_kml,vegdri,quickdri,watersheds],
@@ -737,7 +801,8 @@ def drought_prec_map(request):
 #########################################################################################
 @login_required()
 def drought_4pane(request):
-    return render(request, 'dam_inventory/drought_4pane.html')
+    context = {}
+    return render(request, 'dam_inventory/drought_4pane.html', context)
 #########################################################################################
 @login_required()
 def add_dam(request):

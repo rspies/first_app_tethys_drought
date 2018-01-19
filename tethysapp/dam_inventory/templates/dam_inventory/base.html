@@ -14,16 +14,18 @@
 
 {% block app_navigation_items %}
   {% url 'dam_inventory:drought' as drought_map_url %}
-  {% url 'dam_inventory:drought_fx' as drought_map_fx_url %}
+  {% url 'dam_inventory:drought_nwmfx' as drought_map_nwmfx_url %}
+  {% url 'dam_inventory:drought_outlook' as drought_map_outlook_url %}
   {% url 'dam_inventory:drought_index' as drought_map_index_url %}
   {% url 'dam_inventory:drought_prec' as drought_map_prec_url %}
-  {% url 'dam_inventory/drought_4pane.html' as drought_4pane_map_url %}
+  {% url 'dam_inventory:drought_4pane' as drought_4pane_map_url %}
   <!--{% url 'dam_inventory:home' as home_url %}-->
   <!--{% url 'dam_inventory:add_dam' as add_dam_url %}-->
   <!--{% url 'dam_inventory:dams' as list_dam_url %}-->
   <li class="title">Navigation</li>
   <li class="{% if request.path == drought_map_url %}active{% endif %}"><a href="{{ drought_map_url }}">Drought Main Map</a></li>
-  <li class="{% if request.path == drought_map_fx_url %}active{% endif %}"><a href="{{ drought_map_fx_url }}">Drought Forecast Map</a></li>
+  <li class="{% if request.path == drought_map_nwmfx_url %}active{% endif %}"><a href="{{ drought_map_nwmfx_url }}">Drought NWM Forecast Map</a></li>
+  <li class="{% if request.path == drought_map_outlook_url %}active{% endif %}"><a href="{{ drought_map_outlook_url }}">Drought Outlook Map</a></li>
   <li class="{% if request.path == drought_map_index_url %}active{% endif %}"><a href="{{ drought_map_index_url }}">Drought Index Map</a></li>
   <li class="{% if request.path == drought_map_prec_url %}active{% endif %}"><a href="{{ drought_map_prec_url }}">Drought Precip Map</a></li>
   <li class="{% if request.path == drought_4pane_map_url %}active{% endif %}"><a href="{{ drought_4pane_map_url }}">Drought 4-Pane Map</a></li>

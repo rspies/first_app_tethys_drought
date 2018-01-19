@@ -12,7 +12,7 @@ class DamInventory(TethysAppBase):
     icon = 'dam_inventory/images/drought_logo.png'
     package = 'dam_inventory'
     root_url = 'dam-inventory'
-    color = '#01AEBF'
+    color = '#0063bf'
     description = 'Ryan testing drought monitoring tool'
     tags = ''
     enable_feedback = False
@@ -36,10 +36,15 @@ class DamInventory(TethysAppBase):
                 controller='dam_inventory.controllers.drought_map'
             ),   
             UrlMap(
-                name='drought_fx',
-                url='dam-inventory/drought_fx',
-                controller='dam_inventory.controllers.drought_map_forecast'
-            ),   
+                name='drought_nwmfx',
+                url='dam-inventory/drought_nwmfx',
+                controller='dam_inventory.controllers.drought_map_nwmforecast'
+            ), 
+            UrlMap(
+                name='drought_outlook',
+                url='dam-inventory/drought_outlook',
+                controller='dam_inventory.controllers.drought_map_outlook'
+            ), 
             UrlMap(
                 name='drought_index',
                 url='dam-inventory/drought_index',
