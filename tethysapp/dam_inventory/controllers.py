@@ -237,7 +237,7 @@ def drought_map(request):
     tiger_boundaries = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
-        legend_title='State Boundaries',
+        legend_title='States & Counties',
         layer_options={'visible':True,'opacity':0.8},
         legend_extent=[-112, 36.3, -98.5, 41.66])    
     
@@ -412,7 +412,7 @@ def drought_map_nwmforecast(request):
     tiger_boundaries = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
-        legend_title='State Boundaries',
+        legend_title='States & Counties',
         layer_options={'visible':True,'opacity':0.8},
         legend_extent=[-112, 36.3, -98.5, 41.66])    
     
@@ -523,7 +523,7 @@ def drought_map_outlook(request):
     tiger_boundaries = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
-        legend_title='State Boundaries',
+        legend_title='States & Counties',
         layer_options={'visible':True,'opacity':0.8},
         legend_extent=[-112, 36.3, -98.5, 41.66])    
     
@@ -534,6 +534,18 @@ def drought_map_outlook(request):
         legend_title='HUC Watersheds',
         layer_options={'visible':False,'opacity':0.4},
         legend_extent=[-112, 36.3, -98.5, 41.66])
+        
+    ww_legend = MVLegendImageClass(value='Current Streamflow',
+                             image_url='https://edcintl.cr.usgs.gov/geoserver/qdriwaterwatchshapefile/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=water_watch_today')   
+    water_watch = MVLayer(
+            source='ImageWMS',
+            options={'url': 'https://edcintl.cr.usgs.gov/geoserver/qdriwaterwatchshapefile/wms?',
+                     'params': {'LAYERS': 'water_watch_today'},
+                   'serverType': 'geoserver'},
+            layer_options={'visible':True,'opacity':0.5},
+            legend_title='USGS Water Watch',
+            legend_classes=[ww_legend],
+            legend_extent=[-126, 24.5, -66.2, 49])
         
     # NCEP Climate Outlook MapServer
     ncep_month_outlook = MVLayer(
@@ -573,7 +585,6 @@ def drought_map_outlook(request):
             MVLegendClass('polygon', 'Severe Drought', fill='rgba(207,181,151,0.7)')],
         legend_extent=[-112, 36.3, -98.5, 41.66])
 
-
     # Define map view options
     drought_outlook_map_view_options = MapView(
             height='630px',
@@ -581,7 +592,7 @@ def drought_map_outlook(request):
             controls=['ZoomSlider', 'Rotate', 'ScaleLine', 'FullScreen',
                       {'MousePosition': {'projection': 'EPSG:4326'}},
                       {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-112, 36.3, -98.5, 41.66]}}],
-            layers=[tiger_boundaries,ncep_month_outlook,ncep_seas_outlook,cpc_37_outlook,watersheds],
+            layers=[tiger_boundaries,water_watch,ncep_month_outlook,ncep_seas_outlook,cpc_37_outlook,watersheds],
             view=view_options,
             basemap='OpenStreetMap',
             legend=True
@@ -613,7 +624,7 @@ def drought_index_map(request):
     tiger_boundaries = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
-        legend_title='State Boundaries',
+        legend_title='States & Counties',
         layer_options={'visible':True,'opacity':0.8},
         legend_extent=[-112, 36.3, -98.5, 41.66]) 
         
@@ -688,7 +699,7 @@ def drought_index_map(request):
             width='100%',
             controls=['ZoomSlider', 'Rotate', 'ScaleLine', 'FullScreen',
                       {'MousePosition': {'projection': 'EPSG:4326'}},
-                      {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-130, 22, -65, 54]}}],
+                      {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-112, 36.3, -98.5, 41.66]}}],
             layers=[tiger_boundaries,SWSI_kml,usdm_kml,vegdri,quickdri,watersheds],
             view=view_options,
             basemap='OpenStreetMap',
@@ -721,7 +732,7 @@ def drought_prec_map(request):
     tiger_boundaries = MVLayer(
         source='TileArcGISRest',
         options={'url': 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer'},
-        legend_title='State Boundaries',
+        legend_title='States & Counties',
         layer_options={'visible':True,'opacity':0.8},
         legend_extent=[-112, 36.3, -98.5, 41.66])    
         
@@ -733,18 +744,6 @@ def drought_prec_map(request):
         layer_options={'visible':False,'opacity':0.4},
         legend_extent=[-112, 36.3, -98.5, 41.66])
     
-    ww_legend = MVLegendImageClass(value='Current Streamflow',
-                             image_url='https://edcintl.cr.usgs.gov/geoserver/qdriwaterwatchshapefile/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=water_watch_today')   
-    water_watch = MVLayer(
-            source='ImageWMS',
-            options={'url': 'https://edcintl.cr.usgs.gov/geoserver/qdriwaterwatchshapefile/wms?',
-                     'params': {'LAYERS': 'water_watch_today'},
-                   'serverType': 'geoserver'},
-            layer_options={'visible':True,'opacity':0.5},
-            legend_title='USGS Water Watch',
-            legend_classes=[ww_legend],
-            legend_extent=[-126, 24.5, -66.2, 49])
-
     prec7_legend = MVLegendImageClass(value='7-day Precip Total',
                          image_url='https://vegdri.cr.usgs.gov/wms.php?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&LAYER=PRECIP_TP7')   
     precip7day = MVLayer(
@@ -752,7 +751,7 @@ def drought_prec_map(request):
             options={'url': 'https://vegdri.cr.usgs.gov/wms.php?',
                      'params': {'LAYERS': 'PRECIP_TP7'},
                    'serverType': 'geoserver'},
-            layer_options={'visible':True,'opacity':0.5},
+            layer_options={'visible':False,'opacity':0.5},
             legend_title='7-day Precip',
             legend_classes=[prec7_legend],
             legend_extent=[-126, 24.5, -66.2, 49])
@@ -778,6 +777,15 @@ def drought_prec_map(request):
             MVLegendClass('polygon', '39', fill='rgba(195,142,150,0.7)'),
             MVLegendClass('polygon', '79', fill='rgba(179,158,153,0.7)')],
         legend_extent=[-112, 36.3, -98.5, 41.66])
+    
+    # NOAA WPC QPF forecast
+    WPC_5day_QPF = MVLayer(
+        source='TileArcGISRest',
+        options={'url': 'https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Forecasts_Guidance_Warnings/wpc_qpf/MapServer',
+                'params': {'LAYERS': 'show:10'}},
+        legend_title='WPC 5-day QPF',
+        layer_options={'visible':True,'opacity':0.5},
+        legend_extent=[-112, 36.3, -98.5, 41.66])
         
     # Define map view options
     drought_prec_map_view_options = MapView(
@@ -785,8 +793,8 @@ def drought_prec_map(request):
             width='100%',
             controls=['ZoomSlider', 'Rotate', 'FullScreen', 'ScaleLine', 'WMSLegend',
                       {'MousePosition': {'projection': 'EPSG:4326'}},
-                      {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-130, 22, -65, 54]}}],
-            layers=[tiger_boundaries,water_watch,snodas_swe,precip7day,watersheds],
+                      {'ZoomToExtent': {'projection': 'EPSG:4326', 'extent': [-112, 36.3, -98.5, 41.66]}}],
+            layers=[tiger_boundaries,snodas_swe,precip7day,WPC_5day_QPF,watersheds],
             view=view_options,
             basemap='OpenStreetMap',
             legend=True
