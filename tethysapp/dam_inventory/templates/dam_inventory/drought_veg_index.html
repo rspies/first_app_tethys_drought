@@ -1,14 +1,9 @@
 {% extends "dam_inventory/base.html" %}
 {% load tethys_gizmos staticfiles %}
-{% load tethys_gizmos %}
 
 {% block app_content %}
-  {% gizmo drought_nwmfx_map_view_options %}
+  {% gizmo drought_veg_index_map_view_options %}
   <div id="popup"></div>
-{% endblock %}
-
-{% block app_actions %}
-  {% gizmo toggle_switch %}
 {% endblock %}
 
 {% block styles %}

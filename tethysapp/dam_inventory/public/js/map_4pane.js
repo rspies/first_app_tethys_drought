@@ -23,6 +23,28 @@ $(function()
 		  setAttributions: 'USDM NDMC',
           opacity: 0.5
       })
+        var spi_6 = new ol.layer.Tile({
+          extent: [-13884991, 2870341, -7455066, 6338219],
+          source: new ol.source.TileArcGISRest({
+            url: 'https://gis.ncdc.noaa.gov/arcgis/rest/services/cdo/indices/MapServer',
+            params: {'LAYERS': 'show:14','layerDefs':'{"14":"YEARMONTH=201712"}'},
+            ratio: 1,
+            attributions: 'NCEI SPI'
+          }),
+		  visible: true,
+          opacity: 0.6
+      })
+        var ncdc_pdsi = new ol.layer.Tile({
+          extent: [-13884991, 2870341, -7455066, 6338219],
+          source: new ol.source.TileArcGISRest({
+            url: 'https://gis.ncdc.noaa.gov/arcgis/rest/services/cdo/indices/MapServer',
+            params: {'LAYERS': 'show:2','layerDefs':'{"2":"YEARMONTH=201712"}'},
+            ratio: 1,
+            attributions: 'NDMC USDM'
+          }),
+		  visible: true,
+          opacity: 0.6
+      })
       var ncep_month_outlook_layer = new ol.layer.Tile({
           extent: [-13884991, 2870341, -7455066, 6338219],
           source: new ol.source.TileArcGISRest({
@@ -74,13 +96,13 @@ $(function()
       });
       var map2 = new ol.Map({
         target: 'map2',
-        layers: [layer, ncep_month_outlook_layer,tiger_county_state],
+        layers: [layer, spi_6,tiger_county_state],
         controls: new ol.Collection(),
         view: view
       });
 	  var map3 = new ol.Map({
         target: 'map3',
-        layers: [layer,nwm_soil_layer,nwm_streamanom_layer,tiger_county_state],
+        layers: [layer,ncdc_pdsi,tiger_county_state],
         controls: new ol.Collection(),
         view: view
       });

@@ -1,5 +1,6 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import CustomSetting
+from tethys_sdk.app_settings import SpatialDatasetServiceSetting
 
 
 class DamInventory(TethysAppBase):
@@ -49,7 +50,12 @@ class DamInventory(TethysAppBase):
                 name='drought_index',
                 url='dam-inventory/drought_index',
                 controller='dam_inventory.controllers.drought_index_map'
-            ),   
+            ), 
+            UrlMap(
+                name='drought_veg_index',
+                url='dam-inventory/drought_veg_index',
+                controller='dam_inventory.controllers.drought_veg_index_map'
+            ),
             UrlMap(
                 name='drought_prec',
                 url='dam-inventory/drought_prec',
